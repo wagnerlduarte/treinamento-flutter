@@ -15,6 +15,13 @@ class Api {
 
     List<New> news = [];
     data['news'].forEach((item) {
+
+      List<String> categories = [];
+
+      item['category'].forEach((category) {
+        categories.add(category);
+      });
+
       var notice = New(
         id: item['id'],
         title: item['title'],
@@ -22,6 +29,7 @@ class Api {
         description: item['description'],
         image: item['image'],
         url: item['url'],
+        category: categories,
       );
 
       news.add(notice);

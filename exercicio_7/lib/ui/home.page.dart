@@ -17,9 +17,7 @@ class _HomePageState extends State<HomePage> {
     super.didChangeDependencies();
 
     if (_news.isEmpty) {
-      print('didChangeDependencies');
       _news = await Api.retrieveLocalNews(context);
-      print('didChangeDependencies');
       setState(() {});
     }
   }

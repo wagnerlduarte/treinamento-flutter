@@ -1,4 +1,5 @@
 import 'package:exercicio7start/models/new.model.dart';
+import 'package:exercicio7start/ui/category.widget.dart';
 import 'package:exercicio7start/ui/detail.page.dart';
 import 'package:flutter/material.dart';
 
@@ -27,33 +28,65 @@ class _NewsState extends State<News> {
             padding: const EdgeInsets.only(bottom: 15),
             child: Column(
               children: [
-                Image.network(
-                  widget.notice.image,
-                  fit: BoxFit.fill,
-                  loadingBuilder: (
-                    BuildContext context,
-                    Widget child,
-                    ImageChunkEvent loadingProgress,
-                  ) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
+                Stack(
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 190),
+                      child: Image.network(
+                        widget.notice.image,
+                        fit: BoxFit.fill,
+                        width: double.infinity,
+                        loadingBuilder: (
+                          BuildContext context,
+                          Widget child,
+                          ImageChunkEvent loadingProgress,
+                        ) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object e,
+                            StackTrace stackTrace) {
+                          return Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              color: Colors.white,
+                              size: 50,
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                  errorBuilder: (BuildContext context, Object e, StackTrace stackTrace) {
-                    return Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Icon(Icons.broken_image, color: Colors.white, size: 50,),
-                    );
-                  },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 25,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, int index) {
+                                String category = this.widget.notice.category[index];
+
+                                return Category(label: category);
+                              },
+                              itemCount: this.widget.notice.category.length,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
                 //Image.network(widget.notice.image),
                 Padding(
