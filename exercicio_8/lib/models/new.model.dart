@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'new.model.g.dart';
+
+@JsonSerializable()
 class New {
   final String id;
   final String title;
@@ -18,4 +22,6 @@ class New {
     @required this.image,
     @required this.category,
   });
+
+  factory New.fromJson(Map<String, dynamic> json) => _$NewFromJson(json);
 }

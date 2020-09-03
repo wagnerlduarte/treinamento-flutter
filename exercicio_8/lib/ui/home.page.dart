@@ -1,4 +1,5 @@
 import 'package:exercicio7start/models/new.model.dart';
+import 'package:exercicio7start/models/news.response.dart';
 import 'package:exercicio7start/network/api.dart';
 import 'package:exercicio7start/ui/news.widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,21 +11,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<New> _news = <New>[];
+  NewsResponse _newsResponse;
 
   @override
-  Future<void> didChangeDependencies() async {
+  void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_news.isEmpty) {
-      _news = await Api.retrieveLocalNews(context);
+    _loadNews();
+  }
+
+  _loadNews() async {
+    if (_newsResponse == null) {
+      _newsResponse = await Api.retrieveLocalNews(context);
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_news.isEmpty) {
+    if (_newsResponse == null) {
       return Container(
         color: Colors.white,
         child: Center(
@@ -49,12 +54,12 @@ class _HomePageState extends State<HomePage> {
               height: double.infinity,
               child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) {
-                  New notice = this._news[index];
+                  New notice = this._newsResponse.news[index];
                   return News(
                     notice: notice,
                   );
                 },
-                itemCount: this._news.length,
+                itemCount: this._newsResponse.news.length,
               ),
             ),
           ),
