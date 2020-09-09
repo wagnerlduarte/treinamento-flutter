@@ -19,8 +19,9 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   refreshContacts() async {
-    List<Contact> contacts = await ContactsService.getContacts(
-        withThumbnails: false, iOSLocalizedLabels: false);
+    var contacts = (await ContactsService.getContacts(
+            withThumbnails: false, iOSLocalizedLabels: false))
+        .toList();
 
     setState(() {
       _contacts = contacts;
@@ -28,19 +29,29 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   share(Contact contact) {
-    Share.text('Contatos', '${contact.phones.first.value}', 'text/plan');
+    Share.text('Contatos',
+        '${contact.displayName} ${contact.phones.first.value}', 'text/plan');
   }
 
   @override
   Widget build(BuildContext context) {
     return _contacts == null
-        ? Center(child: CircularProgressIndicator(),)
-        : ListView.builder(itemCount: _contacts?.length ?? 0,
-        itemBuilder: (BuildContext context, int index) {
-          Contact contact = _contacts?.elementAt(index);
-          return ListTile(title: Text(contact.displayName),
-            onTap: () => share(contact),
-            leading: CircleAvatar(child: Text(contact.initials(),),),);
-        });
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : ListView.builder(
+            itemCount: _contacts?.length ?? 0,
+            itemBuilder: (BuildContext context, int index) {
+              Contact contact = _contacts?.elementAt(index);
+              return ListTile(
+                title: Text(contact.displayName ?? ''),
+                onTap: () => share(contact),
+                leading: CircleAvatar(
+                  child: Text(
+                    contact.initials(),
+                  ),
+                ),
+              );
+            });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:exemplo_9/camera.page.dart';
 import 'package:exemplo_9/contacts.page.dart';
 import 'package:exemplo_9/gps.page.dart';
+import 'package:exemplo_9/library.page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _children = [
     CameraPage(),
     GpsPage(),
+    LibraryPage(),
     ContactsPage(),
   ];
 
@@ -59,8 +61,9 @@ class _HomePageState extends State<HomePage> {
         title: Text('Outros'),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
-        currentIndex: 0,
+        currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.camera_alt),
@@ -69,6 +72,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.gps_fixed),
             title: Text('GPS'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.insert_photo),
+            title: Text('Galeria'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.contact_phone),

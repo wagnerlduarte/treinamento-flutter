@@ -1,3 +1,6 @@
+import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:exemplo_9/maps.page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -7,36 +10,36 @@ class GpsPage extends StatefulWidget {
 }
 
 class _GpsPageState extends State<GpsPage> {
-  double latitude;
-  double longitude;
-  bool isLoading = false;
+  double _latitude;
+  double _longitude;
+  bool _isLoading = false;
 
   getLastKnowLocation() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
 
     Position position = await getLastKnownPosition();
 
     setState(() {
-      latitude = position.latitude;
-      longitude = position.longitude;
-      isLoading = false;
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      _isLoading = false;
     });
   }
 
   _getLocation() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
 
     Position position =
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     setState(() {
-      latitude = position.latitude;
-      longitude = position.longitude;
-      isLoading = false;
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      _isLoading = false;
     });
   }
 
@@ -47,28 +50,65 @@ class _GpsPageState extends State<GpsPage> {
     getLastKnowLocation();
   }
 
+  _share() {
+    Share.text(
+      'Location',
+      'Latitude: $_latitude\nLongitude: $_longitude',
+      'text/plain',
+    );
+  }
+
+  _goToMaps() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapsPage(
+          latitude: _latitude,
+          longitude: _longitude,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.gps_fixed),
-        onPressed: () => _getLocation(),
-      ),
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.gps_fixed), onPressed: _getLocation,),
       body: Container(
-        child: isLoading
+        width: double.infinity,
+        height: double.infinity,
+        child: _isLoading
             ? Center(
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(),
-                ),
-              )
+          child: Container(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(),
+          ),
+        )
             : Column(
-                children: [
-                  Text('Latitude $latitude'),
-                  Text('Longitude $longitude')
-                ],
+          children: [
+            Text(
+              'Latitude ${_latitude.toStringAsPrecision(6)}',
+              style: TextStyle(
+                fontSize: 25,
               ),
+            ),
+            Text(
+              'Longitude ${_longitude.toStringAsPrecision(6)}',
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+            CupertinoButton(
+              child: Text('Compartilhar'),
+              onPressed: _share,
+            ),
+            CupertinoButton(
+              child: Text('Maps'),
+              onPressed: _goToMaps,
+            ),
+          ],
+        ),
       ),
     );
   }
